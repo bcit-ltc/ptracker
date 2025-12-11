@@ -1,5 +1,5 @@
----
-version: '3'
+name: ${APP_NAME:-ptracker}
+
 services:
   db:
     image: mariadb:10.5.8
@@ -16,13 +16,21 @@ services:
   app:
     depends_on:
       - db
-    build: .
+    build:
+      context: .
+      platforms:
+        - linux/amd64
+        - linux/arm64
+
     environment:
       DATABASE_URL: "mysql://ptracker:omgverysecret@db:3306/nurse_joy"
       DATABASE_URL_TESTING: "mysql://ptracker:omgverysecret@db:3306/nurse_joy_testing"
       APP_URL: http://localhost:8000
+      DEBUG: true
+      CI: false
+
     ports:
-      - '8000:3000'
+      - 3000:3000
 
 volumes:
   issp_db_data:
